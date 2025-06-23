@@ -14,10 +14,7 @@ export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
 export class UserDto extends AbstractDto {
   @StringFieldOptional({ nullable: true })
-  firstName?: string | null;
-
-  @StringFieldOptional({ nullable: true })
-  lastName?: string | null;
+  name!: string;
 
   @StringFieldOptional({ nullable: true })
   username!: string;
@@ -39,8 +36,7 @@ export class UserDto extends AbstractDto {
 
   constructor(user: UserEntity, options?: UserDtoOptions) {
     super(user);
-    this.firstName = user.firstName;
-    this.lastName = user.lastName;
+    this.name = user.name;
     this.role = user.role;
     this.email = user.email;
     this.avatar = user.avatar;

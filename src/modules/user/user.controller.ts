@@ -29,7 +29,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async admin(@AuthUser() user: UserEntity) {
     return {
-      text: `Admin ${user.firstName}`,
+      text: `Admin ${user.name}`,
     };
   }
 

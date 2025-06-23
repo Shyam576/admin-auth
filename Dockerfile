@@ -1,5 +1,7 @@
 FROM node:lts AS dist
-COPY package.json yarn.lock ./
+WORKDIR /app
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn .yarn
 
 RUN yarn install
 
@@ -8,9 +10,11 @@ COPY . ./
 RUN yarn build:prod
 
 FROM node:lts AS node_modules
-COPY package.json yarn.lock ./
+WORKDIR /app
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn .yarn
 
-RUN yarn install --prod
+RUN yarn install
 
 FROM node:lts
 
@@ -22,8 +26,8 @@ RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
 
-COPY --from=dist dist /usr/src/app/dist
-COPY --from=node_modules node_modules /usr/src/app/node_modules
+COPY --from=dist /app/dist /usr/src/app/dist
+COPY --from=node_modules /app/node_modules /usr/src/app/node_modules
 
 COPY . /usr/src/app
 
