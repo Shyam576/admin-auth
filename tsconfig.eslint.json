@@ -11,5 +11,6 @@
     ".vuepress/**/*",
     "node_modules/**/*",
     "dist/**/*",
+    ".eslintric.js"
   ]
 }

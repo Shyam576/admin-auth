@@ -651,7 +651,6 @@ export function TwitterField(
 export function WebsiteField(
   options: Omit<ApiPropertyOptions, 'type'> & IFieldOptions = {},
 ) {
-  // FIXME: replace trailing slash with a regex, .replace(/\/+$/, '')
   const decorators = [
     Expose({ groups: options.groups, name: options.name }),
     Type(() => String),
@@ -674,7 +673,6 @@ export function WebsiteField(
 export function YoutubeField(
   options: Omit<ApiPropertyOptions, 'type'> & IFieldOptions = {},
 ) {
-  // FIXME: replace trailing slash with a regex, .replace(/\/+$/, '')
   const decorators = [
     Expose({ groups: options.groups, name: options.name }),
     Type(() => String),

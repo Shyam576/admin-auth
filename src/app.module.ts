@@ -1,14 +1,14 @@
-
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClsModule } from 'nestjs-cls';
-
 import { DataSource } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 
 import { AuthModule } from './modules/auth/auth.module.ts';
 import { HealthCheckerModule } from './modules/health-checker/health-checker.module.ts';
+import { RoleModule } from './modules/role/role.module.ts';
+// import { RoleController } from './modules/role/role/role.controller.ts';
 import { UserModule } from './modules/user/user.module.ts';
 import { ApiConfigService } from './shared/services/api-config.service.ts';
 import { SharedModule } from './shared/shared.module.ts';
@@ -17,6 +17,7 @@ import { SharedModule } from './shared/shared.module.ts';
   imports: [
     AuthModule,
     UserModule,
+    RoleModule,
     ClsModule.forRoot({
       global: true,
       middleware: {
@@ -43,7 +44,9 @@ import { SharedModule } from './shared/shared.module.ts';
       },
     }),
     HealthCheckerModule,
+    RoleModule,
   ],
   providers: [],
+  // controllers: [RoleController],
 })
-export class AppModule { }
+export class AppModule {}
