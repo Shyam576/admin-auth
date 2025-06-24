@@ -1,7 +1,6 @@
 module.exports = {
-  templates: `${process.cwd()}/.hygen`,
   helpers: {
-    ControllerName() {
+    ControllerName(name) {
       return `${this.ClassName(name)}Controller`;
     },
     ServiceName(name) {

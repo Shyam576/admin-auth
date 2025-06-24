@@ -24,6 +24,7 @@ module.exports = {
           'CreateDTO',
           'DTO',
           'Entity',
+          'Module',
           'NotFoundException',
           'PageOptionsDTO',
           'Service',
@@ -66,6 +67,10 @@ module.exports = {
             name: 'UpdateDTO',
             value: 'update-dto',
           },
+          {
+            name: 'Module',
+            value: 'module',
+          }
         ],
       }
     ])
@@ -75,4 +80,4 @@ module.exports = {
       return answer;
     })
   }
-}
+} 
