@@ -9,7 +9,7 @@ export class RoleEntity extends AbstractEntity<RoleDto> {
   @Column({ nullable: false, type: 'varchar' })
   name!: string;
 
-  @Column({nullable:false, type: 'json'})
+  @Column({nullable:false, type: 'json', name: 'allowed_menus'})
   allowedMenus!: string[];
 }
 

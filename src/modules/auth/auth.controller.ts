@@ -45,7 +45,7 @@ export class AuthController {
 
     const token = await this.authService.createAccessToken({
       userId: userEntity.id,
-      role: userEntity.role,
+      role: userEntity.role?.name as RoleType,
     });
 
     return new LoginPayloadDto(userEntity.toDto(), token);
@@ -72,7 +72,7 @@ export class AuthController {
   @Version('1')
   @Get('me')
   @HttpCode(HttpStatus.OK)
-  @Auth([RoleType.USER, RoleType.ADMIN])
+  @Auth()
   @ApiOkResponse({ type: UserDto, description: 'current user info' })
   getCurrentUser(@AuthUser() user: UserEntity): UserDto {
     return user.toDto();

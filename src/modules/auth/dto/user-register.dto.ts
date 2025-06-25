@@ -17,4 +17,7 @@ export class UserRegisterDto {
 
   @PhoneFieldOptional()
   phone?: string;
+
+  @StringField({ nullable: true })
+  roleId?: string;
 }

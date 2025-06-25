@@ -5,7 +5,6 @@ import { AbstractEntity } from '../../common/abstract.entity.ts';
 import { UseDto } from '../../decorators/use-dto.decorator.ts';
 import type { UserDtoOptions } from './dtos/user.dto.ts';
 import { UserDto } from './dtos/user.dto.ts';
-import { UserEntity } from './user.entity.ts';
 
 @Entity({ name: 'user_settings' })
 @UseDto(UserDto)
@@ -22,10 +21,10 @@ export class UserSettingsEntity extends AbstractEntity<
   @Column({ type: 'uuid' })
   userId?: string;
 
-  @OneToOne(() => UserEntity, (user) => user.settings, {
+  @OneToOne('UserEntity', (user: any) => user.settings, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'user_id' })
-  user?: Relation<UserEntity>;
+  user?: Relation<any>;
 }

@@ -1,9 +1,8 @@
 import { AbstractDto } from '../../../common/dto/abstract.dto.ts';
-import { RoleType } from '../../../constants/role-type.ts';
+import { RoleDto } from '../../role/dto/role.dto.ts';
 import {
   BooleanFieldOptional,
   EmailFieldOptional,
-  EnumFieldOptional,
   PhoneFieldOptional,
   StringFieldOptional,
 } from '../../../decorators/field.decorators.ts';
@@ -19,8 +18,10 @@ export class UserDto extends AbstractDto {
   @StringFieldOptional({ nullable: true })
   username!: string;
 
-  @EnumFieldOptional(() => RoleType)
-  role?: RoleType;
+  @StringFieldOptional({ nullable: true })
+  roleId?: string | null;
+
+  role?: RoleDto | null;
 
   @EmailFieldOptional({ nullable: true })
   email?: string | null;
@@ -37,7 +38,8 @@ export class UserDto extends AbstractDto {
   constructor(user: UserEntity, options?: UserDtoOptions) {
     super(user);
     this.name = user.name;
-    this.role = user.role;
+    this.roleId = user.roleId;
+    this.role = user.role ? new RoleDto(user.role) : null;
     this.email = user.email;
     this.avatar = user.avatar;
     this.phone = user.phone;

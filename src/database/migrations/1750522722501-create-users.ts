@@ -24,10 +24,10 @@ export class CreateUsersTable1696957687715 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'role',
-            type: 'enum',
-            enum: ['USER', 'ADMIN'],
-            default: "'USER'",
+            name: 'role_id',
+            type: 'varchar',
+            length: '36',
+            isNullable: true,
           },
           {
             name: 'email',

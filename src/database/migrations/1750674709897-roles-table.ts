@@ -16,8 +16,20 @@ export class RolesTable1750674709897 implements MigrationInterface {
             type: 'varchar(255)',
           },
           {
-            name: 'allowedMenus',
+            name: 'allowed_menus',
             type: 'json',
+          },
+          {
+            name: 'created_at',
+            type: 'timestamp',
+            default: 'CURRENT_TIMESTAMP',
+            isNullable: false,
+          },
+          {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'CURRENT_TIMESTAMP',
+            isNullable: true
           },
         ],
       }),
@@ -25,10 +37,10 @@ export class RolesTable1750674709897 implements MigrationInterface {
     );
 
      await queryRunner.query(`
-      INSERT INTO roles (id, name, allowedMenus) 
+      INSERT INTO roles (id, name, allowed_menus, created_at, updated_at) 
       VALUES 
-        (UUID(), 'admin', '["dashboard","users","settings","analytics"]'),
-        (UUID(), 'superadmin', '["dashboard","users","settings","analytics"]')
+        (UUID(), 'admin', '["dashboard","users","settings","analytics"]', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+        (UUID(), 'superadmin', '["dashboard","users","settings","analytics"]', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `);
   }
 

@@ -9,7 +9,6 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { PageDto } from '../../common/dto/page.dto.ts';
-import { RoleType } from '../../constants/role-type.ts';
 import { ApiPageResponse } from '../../decorators/api-page-response.decorator.ts';
 import { AuthUser } from '../../decorators/auth-user.decorator.ts';
 import { Auth, UUIDParam } from '../../decorators/http.decorators.ts';
@@ -25,7 +24,7 @@ export class UserController {
   constructor(private userService: UserService) { }
 
   @Get('admin')
-  @Auth([RoleType.USER])
+  @Auth()
   @HttpCode(HttpStatus.OK)
   async admin(@AuthUser() user: UserEntity) {
     return {
@@ -34,7 +33,7 @@ export class UserController {
   }
 
   @Get()
-  @Auth([RoleType.USER])
+  @Auth()
   @HttpCode(HttpStatus.OK)
   @ApiPageResponse({
     description: 'Get users list',
@@ -48,7 +47,7 @@ export class UserController {
   }
 
   @Get(':id')
-  @Auth([RoleType.USER])
+  @Auth()
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,

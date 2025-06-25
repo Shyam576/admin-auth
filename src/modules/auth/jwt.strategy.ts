@@ -1,8 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-
-import type { RoleType } from '../../constants/role-type.ts';
 import { TokenType } from '../../constants/token-type.ts';
 import { ApiConfigService } from '../../shared/services/api-config.service.ts';
 import type { UserEntity } from '../user/user.entity.ts';
@@ -22,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(args: {
     userId: Uuid;
-    role: RoleType;
+    role: string;
     type: TokenType;
   }): Promise<UserEntity> {
     if (args.type !== TokenType.ACCESS_TOKEN) {
@@ -32,7 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.userService.findOne({
       // FIXME: issue with type casts
       id: args.userId as never,
-      role: args.role,
+      role: args.role as never,
     });
 
     if (!user) {
