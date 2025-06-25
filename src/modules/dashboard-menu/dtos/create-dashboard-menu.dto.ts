@@ -5,4 +5,12 @@ export class CreateDashbaordMenuDto {
   @ApiProperty()
   @IsString()
   name!: string;
+
+   @ApiProperty()
+  @IsString()
+  url!: string;
+
+   @ApiProperty()
+  @IsString()
+  icon!: string;
 }

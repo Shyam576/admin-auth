@@ -8,5 +8,11 @@ import { DashboardMenuDto } from './dtos/dashboard-menu.dto.ts';
 export class DashboardMenuEntity extends AbstractEntity<DashboardMenuDto> {
   @Column({ nullable: false, type: 'varchar' })
   name!: string;
+
+  @Column({ nullable: false, type: 'varchar' })
+  url!: string;
+
+  @Column({ nullable: false, type: 'varchar' })
+  icon!: string;
 }
 

@@ -19,6 +19,16 @@ export class CreateDashboardMenuTable1750829512427
             isNullable: false,
           },
           {
+            name: 'url',
+            type: 'varchar(100)',
+            isNullable:false
+          },
+          {
+            name: 'icon',
+            type: 'varchar(100)',
+            isNullable: false,
+          },
+          {
             name: 'created_at',
             type: 'timestamp',
             default: 'CURRENT_TIMESTAMP',

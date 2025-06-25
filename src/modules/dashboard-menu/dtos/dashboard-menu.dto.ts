@@ -6,8 +6,16 @@ export class DashboardMenuDto extends AbstractDto {
     @ApiProperty()
     name!: string;
 
+    @ApiProperty()
+    url!: string;
+
+    @ApiProperty()
+    icon!: string;
+
     constructor(dashboardMenu: DashboardMenuEntity){
         super(dashboardMenu)
         this.name = dashboardMenu.name;
+        this.url = dashboardMenu.url;
+        this.icon = dashboardMenu.icon;
     }
 }
