@@ -9,8 +9,6 @@ import {
   Version,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-
-import { RoleType } from '../../constants/role-type.ts';
 import { AuthUser } from '../../decorators/auth-user.decorator.ts';
 import { Auth } from '../../decorators/http.decorators.ts';
 // import { ApiFile } from '../../decorators/swagger.schema.ts';
@@ -45,7 +43,8 @@ export class AuthController {
 
     const token = await this.authService.createAccessToken({
       userId: userEntity.id,
-      role: userEntity.role?.name as RoleType,
+      role: userEntity?.role?.name,
+      allowedMenus: userEntity?.role?.allowedMenus,
     });
 
     return new LoginPayloadDto(userEntity.toDto(), token);

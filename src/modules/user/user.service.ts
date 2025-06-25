@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
-import type { FindOptionsWhere } from 'typeorm';
+import type { FindOneOptions } from 'typeorm';
 import { Repository } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
@@ -34,8 +34,8 @@ export class UserService {
   /**
    * Find single user
    */
-  findOne(findData: FindOptionsWhere<UserEntity>): Promise<UserEntity | null> {
-    return this.userRepository.findOneBy(findData);
+  findOne(findData: FindOneOptions<UserEntity>): Promise<UserEntity | null> {
+    return this.userRepository.findOne(findData);
   }
 
   findByUsernameOrEmail(
@@ -98,7 +98,7 @@ export class UserService {
   }
 
   async getUser(userId: Uuid): Promise<UserDto> {
-    const queryBuilder = this.userRepository.createQueryBuilder('user');
+    const queryBuilder = this.userRepository.createQueryBuilder('user').leftJoinAndSelect('user.role', 'role');
 
     queryBuilder.where('user.id = :userId', { userId });
 

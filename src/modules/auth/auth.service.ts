@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { validateHash } from '../../common/utils.ts';
-import type { RoleType } from '../../constants/role-type.ts';
 import { TokenType } from '../../constants/token-type.ts';
 import { UserNotFoundException } from '../../exceptions/user-not-found.exception.ts';
 import { ApiConfigService } from '../../shared/services/api-config.service.ts';
@@ -20,8 +19,9 @@ export class AuthService {
   ) {}
 
   async createAccessToken(data: {
-    role: RoleType;
+    role?: string;
     userId: Uuid;
+    allowedMenus?: string[];
   }): Promise<TokenPayloadDto> {
     return new TokenPayloadDto({
       expiresIn: this.configService.authConfig.jwtExpirationTime,
@@ -29,14 +29,15 @@ export class AuthService {
         userId: data.userId,
         type: TokenType.ACCESS_TOKEN,
         role: data.role,
+        allowedMenus: data.allowedMenus,
       }),
     });
   }
 
   async validateUser(userLoginDto: UserLoginDto): Promise<UserEntity> {
-    const user = await this.userService.findOne({
+    const user = await this.userService.findOne({where:{
       email: userLoginDto.email,
-    });
+    },relations:['role']});
 
     const isPasswordValid = await validateHash(
       userLoginDto.password,
