@@ -17,32 +17,42 @@ export class DashboardMenuService {
     return menus.map((menu) => new DashboardMenuDto(menu));
   }
 
-  async createDashboardMenu(createDashboardMenu: CreateDashbaordMenuDto): Promise<DashboardMenuDto>{
-    const dashboardMenuDto= {
-        ...createDashboardMenu,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    }
+  async createDashboardMenu(
+    createDashboardMenu: CreateDashbaordMenuDto,
+  ): Promise<DashboardMenuDto> {
+    const dashboardMenuDto = {
+      ...createDashboardMenu,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-    const menu =  this.dashboardMenuRepository.create(dashboardMenuDto);
+    const menu = this.dashboardMenuRepository.create(dashboardMenuDto);
     return await this.dashboardMenuRepository.save(menu);
   }
 
-  async updateDashboardMenu(id: Uuid, updateDashboardMenuDto: CreateDashbaordMenuDto):Promise<DashboardMenuDto>{
-    const menu = await this.dashboardMenuRepository.findOne({ where:{id: id}})
+  async updateDashboardMenu(
+    id: Uuid,
+    updateDashboardMenuDto: CreateDashbaordMenuDto,
+  ): Promise<DashboardMenuDto> {
+    const menu = await this.dashboardMenuRepository.findOne({
+      where: { id: id },
+    });
 
-    if(!menu){
-        throw new NotFoundException('Menu not found');
+    if (!menu) {
+      throw new NotFoundException('Menu not found');
     }
-    const updatedDashboardMenuDto= {
-        ...updateDashboardMenuDto,
-        updatedAt: new Date(),
-    }
+    const updatedDashboardMenuDto = {
+      ...updateDashboardMenuDto,
+      updatedAt: new Date(),
+    };
     Object.assign(menu, updatedDashboardMenuDto);
 
-    const updated = await this.dashboardMenuRepository.save(menu)
+    const updated = await this.dashboardMenuRepository.save(menu);
 
     return updated;
   }
 
+  async deleteDashboardMenu(id: Uuid){
+    return await this.dashboardMenuRepository.delete(id);
+  }
 }
