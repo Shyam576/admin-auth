@@ -12,9 +12,8 @@ import {
 import { DashboardMenuService } from './dashboard-menu.service';
 import { Auth } from '../../decorators/http.decorators';
 import { DashboardMenuDto } from './dtos/dashboard-menu.dto';
-import type { CreateDashbaordMenuDto } from './dtos/create-dashboard-menu.dto';
-import { ApiOkResponse } from '@nestjs/swagger';
-
+import { CreateDashbaordMenuDto } from './dtos/create-dashboard-menu.dto';
+import { ApiBody, ApiOkResponse, ApiParam } from '@nestjs/swagger';
 
 @Controller('dashboard-menu-controller')
 export class DashboardMenuController {
@@ -30,7 +29,11 @@ export class DashboardMenuController {
   @Post()
   @Auth()
   @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: DashboardMenuDto, description: 'Successfully Created Menu' })
+  @ApiBody({ type: CreateDashbaordMenuDto })
+  @ApiOkResponse({
+    type: DashboardMenuDto,
+    description: 'Successfully Created Menu',
+  })
   async createDashboardMenu(
     @Body() createDashboardMenuDto: CreateDashbaordMenuDto,
   ): Promise<DashboardMenuDto> {
@@ -42,22 +45,23 @@ export class DashboardMenuController {
   @Patch(':id')
   @Auth()
   @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    type: DashboardMenuDto,
+    description: 'Successfully Created Menu',
+  })
   async updateDashboardMenu(
-    @Param('id') id: Uuid,
+    @Param('id') id: string,
     @Body() createDashboardMenuDto: CreateDashbaordMenuDto,
   ): Promise<DashboardMenuDto> {
     return await this.dashboardMenuService.updateDashboardMenu(
-      id,
+      id as Uuid,
       createDashboardMenuDto,
     );
   }
 
   @Delete(':id')
   @Auth()
-  async deleteDashboardMenu(
-    @Param('id') id: Uuid,
-  ){
-    return await this.dashboardMenuService.deleteDashboardMenu(id);
+  async deleteDashboardMenu(@Param('id') id: string) {
+    return await this.dashboardMenuService.deleteDashboardMenu(id as Uuid);
   }
-
 }
