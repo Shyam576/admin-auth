@@ -23,8 +23,13 @@ export class RoleService {
     return new RoleDto(role);
   }
 
-  async createRole(dto: CreateRoleDto): Promise<RoleDto> {
-    const role = this.roleRepository.create(dto);
+  async createRole(createRoleDto: CreateRoleDto): Promise<RoleDto> {
+    const roleDto = {
+        ...createRoleDto,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    }
+    const role = this.roleRepository.create(roleDto);
     await this.roleRepository.save(role);
     return new RoleDto(role);
   }
@@ -32,7 +37,12 @@ export class RoleService {
   async updateRole(id: string, dto: CreateRoleDto): Promise<RoleDto> {
     const role = await this.roleRepository.findOneBy({ id: id as Uuid });
     if (!role) throw new NotFoundException('Role not found');
-    Object.assign(role, dto);
+
+    const updatedDto = {
+        ...dto,
+        updatedAt: new Date()
+    }
+    Object.assign(role, updatedDto);
     await this.roleRepository.save(role);
     return new RoleDto(role);
   }
@@ -46,4 +56,4 @@ export class RoleService {
     if (!role) throw new NotFoundException('Role not found');
     return role.allowedMenus;
   }
-} 
+}
