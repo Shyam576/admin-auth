@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DashboardMenuEntity } from './dashboard-menu.entity';
 import type { Repository } from 'typeorm';
@@ -53,6 +53,11 @@ export class DashboardMenuService {
   }
 
   async deleteDashboardMenu(id: Uuid){
-    return await this.dashboardMenuRepository.delete(id);
+    const deleted =  await this.dashboardMenuRepository.delete(id);
+    if(deleted.affected ===1){
+        return { sucess: true, message: 'Menu deleted successfully'}
+    }else{
+        throw new InternalServerErrorException('Could not delete the menu')
+    }
   }
 }
