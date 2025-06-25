@@ -13,7 +13,7 @@ import { DashboardMenuService } from './dashboard-menu.service';
 import { Auth } from '../../decorators/http.decorators';
 import { DashboardMenuDto } from './dtos/dashboard-menu.dto';
 import { CreateDashbaordMenuDto } from './dtos/create-dashboard-menu.dto';
-import { ApiBody, ApiOkResponse, ApiParam } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('dashboard-menu-controller')
 export class DashboardMenuController {
