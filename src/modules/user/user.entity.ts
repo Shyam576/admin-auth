@@ -31,6 +31,9 @@ export class UserEntity extends AbstractEntity<UserDto, UserDtoOptions> {
   @Column({ nullable: true, type: 'varchar' })
   avatar!: string | null;
 
+  @Column({ type: 'boolean', default: true })
+  isActive!: boolean;
+
   @OneToOne('UserSettingsEntity', (userSettings: any) => userSettings.user)
   settings?: any;
 }

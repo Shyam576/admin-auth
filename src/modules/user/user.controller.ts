@@ -3,6 +3,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Post,
   Query,
   ValidationPipe,
 } from '@nestjs/common';
@@ -56,5 +58,12 @@ export class UserController {
   })
   getUser(@UUIDParam('id') userId: string): Promise<UserDto> {
     return this.userService.getUser(userId as Uuid);
+  }
+
+  @Post(':id/change-status')
+  @Auth()
+  @HttpCode(HttpStatus.OK)
+  changeStatus(@Param('id') id: string, @AuthUser() user: UserEntity){
+    return this.userService.changeStatus(id as Uuid, user)
   }
 }

@@ -17,9 +17,6 @@ export class UserDto extends AbstractDto {
   name!: string;
 
   @StringFieldOptional({ nullable: true })
-  username!: string;
-
-  @StringFieldOptional({ nullable: true })
   roleId?: string | null;
 
   @ApiProperty()

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
@@ -20,14 +20,15 @@ import type { UserDto } from './dtos/user.dto.ts';
 import type { UsersPageOptionsDto } from './dtos/users-page-options.dto.ts';
 import { UserEntity } from './user.entity.ts';
 import type { UserSettingsEntity } from './user-settings.entity.ts';
+import { RoleEntity } from '../../modules/role/role.entity.ts';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    // private validatorService: ValidatorService,
-    // private awsS3Service: AwsS3Service,
+    @InjectRepository(RoleEntity)
+    private roleRepository: Repository<RoleEntity>,
     private commandBus: CommandBus,
   ) {}
 
@@ -98,7 +99,9 @@ export class UserService {
   }
 
   async getUser(userId: Uuid): Promise<UserDto> {
-    const queryBuilder = this.userRepository.createQueryBuilder('user').leftJoinAndSelect('user.role', 'role');
+    const queryBuilder = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.role', 'role');
 
     queryBuilder.where('user.id = :userId', { userId });
 
@@ -118,5 +121,38 @@ export class UserService {
     return this.commandBus.execute<CreateSettingsCommand, UserSettingsEntity>(
       new CreateSettingsCommand(userId, createSettingsDto),
     );
+  }
+
+  async changeStatus(id: Uuid, user: UserEntity):Promise<any> {
+    try {
+      const userData = await this.userRepository.findOne({
+        where: {
+          id: id,
+        },
+      });
+
+      if (!userData) {
+        throw new NotFoundException('User not found');
+      }
+
+      const roleEntity = await this.roleRepository.findOne({where:{
+        id: user.roleId as Uuid,
+      }});
+
+      if(!roleEntity){
+         throw new NotFoundException('No role found for the particular user')
+      }
+
+      if(!(roleEntity.name === 'Super Admin')){
+        throw new ForbiddenException('Only Super Admin can change the status')
+      }
+      userData.isActive = userData.isActive ? false : true;
+
+      const savedData =  await this.userRepository.save(userData);
+
+      return savedData;
+    } catch (e) {
+      console.error('Could not change status: ', e);
+    }
   }
 }
