@@ -13,7 +13,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private userService: UserService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        // Extract from cookies first
+        (request) => {
+          return request?.cookies?.access_token;
+        },
+        // Fallback to Authorization header for backward compatibility
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       secretOrKey: configService.authConfig.publicKey,
     });
   }
@@ -28,11 +35,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     const user = await this.userService.findOne({
-      // FIXME: issue with type casts
       where: {
-        id: args.userId as never,
-        role: args.role as never,
+        id: args.userId,
       },
+      relations: ['role'],
     });
 
     if (!user) {

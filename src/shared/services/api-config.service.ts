@@ -120,6 +120,17 @@ export class ApiConfigService {
     };
   }
 
+  get cookieConfig() {
+    return {
+      httpOnly: true,
+      secure: this.isProduction,
+      sameSite: this.isProduction ? 'none' : 'lax',
+      maxAge: this.getNumber('JWT_EXPIRATION_TIME') * 1000, // Convert to milliseconds
+      domain: this.isProduction ? this.getString('COOKIE_DOMAIN', '') : undefined,
+      path: '/',
+    };
+  }
+
   get appConfig() {
     return {
       port: this.getString('PORT'),

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import type { Response } from 'express';
 
 import { validateHash } from '../../common/utils.ts';
 import { TokenType } from '../../constants/token-type.ts';
@@ -7,7 +8,6 @@ import { UserNotFoundException } from '../../exceptions/user-not-found.exception
 import { ApiConfigService } from '../../shared/services/api-config.service.ts';
 import type { UserEntity } from '../user/user.entity.ts';
 import { UserService } from '../user/user.service.ts';
-import { TokenPayloadDto } from './dto/token-payload.dto.ts';
 import type { UserLoginDto } from './dto/user-login.dto.ts';
 
 @Injectable()
@@ -22,15 +22,37 @@ export class AuthService {
     role?: string;
     userId: Uuid;
     allowedMenus?: string[];
-  }): Promise<TokenPayloadDto> {
-    return new TokenPayloadDto({
-      expiresIn: this.configService.authConfig.jwtExpirationTime,
-      token: await this.jwtService.signAsync({
-        userId: data.userId,
-        type: TokenType.ACCESS_TOKEN,
-        role: data.role,
-        allowedMenus: data.allowedMenus,
-      }),
+  }): Promise<string> {
+    return await this.jwtService.signAsync({
+      userId: data.userId,
+      type: TokenType.ACCESS_TOKEN,
+      role: data.role,
+      allowedMenus: data.allowedMenus,
+    });
+  }
+
+  setAccessTokenCookie(res: Response, token: string): void {
+    const cookieConfig = this.configService.cookieConfig;
+    
+    res.cookie('access_token', token, {
+      httpOnly: cookieConfig.httpOnly,
+      secure: cookieConfig.secure,
+      sameSite: cookieConfig.sameSite as 'none' | 'strict' | 'lax',
+      maxAge: cookieConfig.maxAge,
+      domain: cookieConfig.domain,
+      path: cookieConfig.path,
+    });
+  }
+
+  clearAccessTokenCookie(res: Response): void {
+    const cookieConfig = this.configService.cookieConfig;
+    
+    res.clearCookie('access_token', {
+      httpOnly: cookieConfig.httpOnly,
+      secure: cookieConfig.secure,
+      sameSite: cookieConfig.sameSite as 'none' | 'strict' | 'lax',
+      domain: cookieConfig.domain,
+      path: cookieConfig.path,
     });
   }
 

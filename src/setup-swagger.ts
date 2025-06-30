@@ -5,11 +5,32 @@ export function setupSwagger(app: INestApplication): void {
   const documentBuilder = new DocumentBuilder()
     .setTitle('API')
     .setDescription(
-      `### REST
+      `### REST API with HTTP-Only Cookie Authentication
 
-Routes is following REST standard (Richardson level 3)
+This API uses secure HTTP-only cookies for authentication instead of Bearer tokens.
 
-<details><summary>Detailed specification</summary>
+#### Authentication Flow:
+1. **Login**: POST \`/api/auth/login\` with credentials
+   - Sets HTTP-only cookie automatically
+   - Returns user information
+2. **Authenticated Requests**: Include cookies automatically
+   - No need to manually add Authorization headers
+   - Cookies are sent automatically with requests
+3. **Logout**: POST \`/api/auth/logout\`
+   - Clears the authentication cookie
+
+#### Security Features:
+- **HTTP-Only Cookies**: JavaScript cannot access authentication tokens
+- **Secure by Default**: HTTPS required in production
+- **CSRF Protection**: SameSite cookie attribute prevents cross-site attacks
+- **Automatic Expiration**: Tokens expire based on server configuration
+
+#### Testing in Swagger:
+- Cookies are automatically handled by the browser
+- No need to manually configure authentication
+- Simply call the login endpoint first, then other endpoints will work
+
+<details><summary>Detailed REST specification</summary>
 <p>
 
 **List:**
@@ -48,7 +69,15 @@ Routes is following REST standard (Richardson level 3)
 </p>
 </details>`,
     )
-    .addBearerAuth();
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Bearer token authentication (fallback for backward compatibility)',
+      },
+      'bearer',
+    );
 
   if (process.env.API_VERSION) {
     documentBuilder.setVersion(process.env.API_VERSION);
@@ -58,6 +87,7 @@ Routes is following REST standard (Richardson level 3)
   SwaggerModule.setup('documentation', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
+      withCredentials: true, // Enable cookie support
     },
   });
 

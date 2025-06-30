@@ -11,6 +11,7 @@ import { Transport } from '@nestjs/microservices';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import compression from 'compression';
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { initializeTransactionalContext } from 'typeorm-transactional';
@@ -31,16 +32,24 @@ export async function bootstrap(): Promise<NestExpressApplication> {
     new ExpressAdapter(),
     {
       cors: {
-        origin: process.env.CORS_ORIGINS?.split(',') || [`http://localhost:${process.env.PORT}`],
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+        origin: process.env.CORS_ORIGINS?.split(',') || [
+          `http://localhost:${process.env.PORT}`,
+          'http://localhost:3002',
+          'http://localhost:3000',
+          'http://localhost:3001',
+          'http://localhost:8080'
+        ],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
         credentials: true,
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
       }
     },
   );
   app.enable('trust proxy'); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
   app.use(helmet());
-  // app.setGlobalPrefix('/api'); use api as global prefix if you don't have subdomain
+  app.setGlobalPrefix('/api'); // use api as global prefix if you don't have subdomain
   app.use(compression());
+  app.use(cookieParser());
   app.use(morgan('combined'));
   app.enableVersioning();
 
