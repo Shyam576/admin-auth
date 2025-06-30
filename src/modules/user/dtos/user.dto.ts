@@ -7,6 +7,7 @@ import {
   StringFieldOptional,
 } from '../../../decorators/field.decorators.ts';
 import type { UserEntity } from '../user.entity.ts';
+import { ApiProperty } from '@nestjs/swagger';
 
 // TODO, remove this class and use constructor's second argument's type
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
@@ -21,6 +22,7 @@ export class UserDto extends AbstractDto {
   @StringFieldOptional({ nullable: true })
   roleId?: string | null;
 
+  @ApiProperty()
   role?: RoleDto | null;
 
   @EmailFieldOptional({ nullable: true })

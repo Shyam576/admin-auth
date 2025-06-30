@@ -6,6 +6,9 @@ export class CreateRoleDto {
   @StringField()
   name!: string;
 
+  @StringField()
+  description!:string;
+
   @ApiProperty({ type: [String], description: 'Array of allowed menu keys' })
   @IsArray()
   @IsString({ each: true })

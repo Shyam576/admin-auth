@@ -16,6 +16,10 @@ export class RolesTable1750674709897 implements MigrationInterface {
             type: 'varchar(255)',
           },
           {
+            name: 'description',
+            type: 'varchar(255)'
+          },
+          {
             name: 'allowed_menus',
             type: 'json',
           },

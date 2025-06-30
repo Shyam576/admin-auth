@@ -13,7 +13,9 @@ export class RoleService {
   ) {}
 
   async getAllRoles(): Promise<RoleDto[]> {
-    const roles = await this.roleRepository.find();
+    const roles = await this.roleRepository.find({
+        relations: ['user']
+    });
     return roles.map((role) => new RoleDto(role));
   }
 
