@@ -12,6 +12,7 @@ import { UserModule } from './modules/user/user.module.ts';
 import { ApiConfigService } from './shared/services/api-config.service.ts';
 import { SharedModule } from './shared/shared.module.ts';
 import { DashboardMenuModule } from './modules/dashboard-menu/dashboard-menu.module.ts';
+import { GuideModule } from './modules/guidelines/guidelines.module.ts';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { DashboardMenuModule } from './modules/dashboard-menu/dashboard-menu.mod
     UserModule,
     RoleModule,
     DashboardMenuModule,
+    GuideModule,
     ClsModule.forRoot({
       global: true,
       middleware: {
