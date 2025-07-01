@@ -37,7 +37,7 @@ export class AuthService {
     res.cookie('access_token', token, {
       httpOnly: cookieConfig.httpOnly,
       secure: cookieConfig.secure,
-      sameSite: cookieConfig.sameSite as 'none' | 'strict' | 'lax',
+      sameSite: cookieConfig.sameSite,
       maxAge: cookieConfig.maxAge,
       domain: cookieConfig.domain,
       path: cookieConfig.path,
@@ -50,7 +50,7 @@ export class AuthService {
     res.clearCookie('access_token', {
       httpOnly: cookieConfig.httpOnly,
       secure: cookieConfig.secure,
-      sameSite: cookieConfig.sameSite as 'none' | 'strict' | 'lax',
+      sameSite: cookieConfig.sameSite,
       domain: cookieConfig.domain,
       path: cookieConfig.path,
     });

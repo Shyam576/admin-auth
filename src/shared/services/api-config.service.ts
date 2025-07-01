@@ -7,7 +7,7 @@ import { SnakeNamingStrategy } from '../../snake-naming.strategy.ts';
 
 @Injectable()
 export class ApiConfigService {
-  constructor(private configService: ConfigService) { }
+  constructor(private configService: ConfigService) {}
 
   get isDevelopment(): boolean {
     return this.nodeEnv === 'development';
@@ -67,7 +67,10 @@ export class ApiConfigService {
   get postgresConfig(): TypeOrmModuleOptions {
     const entities = this.isDevelopment
       ? ['dist/modules/**/*.entity.js', 'dist/modules/**/*.view-entity.js']
-      : ['src/modules/**/*.entity{.ts,.js}', 'src/modules/**/*.view-entity{.ts,.js}'];
+      : [
+          'src/modules/**/*.entity{.ts,.js}',
+          'src/modules/**/*.view-entity{.ts,.js}',
+        ];
     const migrations = this.isDevelopment
       ? ['dist/database/migrations/*.js']
       : ['src/database/migrations/*{.ts,.js}'];
@@ -123,10 +126,15 @@ export class ApiConfigService {
   get cookieConfig() {
     return {
       httpOnly: true,
-      secure: this.isProduction,
-      sameSite: this.isProduction ? 'none' : 'lax',
+      secure: true,
+      sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as
+        | 'none'
+        | 'lax'
+        | 'strict',
       maxAge: this.getNumber('JWT_EXPIRATION_TIME') * 1000, // Convert to milliseconds
-      domain: this.isProduction ? this.getString('COOKIE_DOMAIN', '') : undefined,
+      domain: this.isProduction
+        ? this.getString('COOKIE_DOMAIN', '')
+        : undefined,
       path: '/',
     };
   }
