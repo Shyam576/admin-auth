@@ -71,7 +71,11 @@ export class UserService {
     userRegisterDto: UserRegisterDto,
     // file?: Reference<IFile>,
   ): Promise<UserEntity> {
-    const user = this.userRepository.create(userRegisterDto);
+    const dto = {
+        ...userRegisterDto,
+        isActive: true,
+    }
+    const user = this.userRepository.create(dto);
 
     // if (file && !this.validatorService.isImage(file.mimetype)) {
     //   throw new FileNotImageException();
