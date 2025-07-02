@@ -34,7 +34,7 @@ export class UserDto extends AbstractDto {
   @BooleanFieldOptional()
   isActive?: boolean;
 
-  constructor(user: UserEntity, options?: UserDtoOptions) {
+  constructor(user: UserEntity) {
     super(user);
     this.name = user.name;
     this.roleId = user.roleId;
@@ -42,6 +42,6 @@ export class UserDto extends AbstractDto {
     this.email = user.email;
     this.avatar = user.avatar;
     this.phone = user.phone;
-    this.isActive = options?.isActive;
+    this.isActive = user.isActive;
   }
 }

@@ -1,14 +1,15 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Param,
-  Post,
+  Patch,
   Query,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { PageDto } from '../../common/dto/page.dto.ts';
 import { ApiPageResponse } from '../../decorators/api-page-response.decorator.ts';
@@ -19,11 +20,12 @@ import { UserDto } from './dtos/user.dto.ts';
 import { UsersPageOptionsDto } from './dtos/users-page-options.dto.ts';
 import { UserEntity } from './user.entity.ts';
 import { UserService } from './user.service.ts';
+import { UpdateUserDto } from './dtos/update-user.dto.ts';
 
 @Controller('users')
 @ApiTags('users')
 export class UserController {
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {}
 
   @Get('admin')
   @Auth()
@@ -60,10 +62,15 @@ export class UserController {
     return this.userService.getUser(userId as Uuid);
   }
 
-  @Post(':id/change-status')
+  @Patch(':id/update')
   @Auth()
   @HttpCode(HttpStatus.OK)
-  changeStatus(@Param('id') id: string, @AuthUser() user: UserEntity){
-    return this.userService.changeStatus(id as Uuid, user)
+  @ApiOkResponse({ type: UpdateUserDto, description: 'Successfully Created Role' })
+  changeStatus(
+    @Param('id') id: string,
+    @AuthUser() user: UserEntity,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.changeStatus(id as Uuid, user, updateUserDto);
   }
 }
