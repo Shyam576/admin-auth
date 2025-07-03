@@ -132,7 +132,7 @@ SelectQueryBuilder.prototype.searchByString = function (
   this.andWhere(
     new Brackets((qb) => {
       for (const item of columnNames) {
-        qb.orWhere(`${item} ILIKE :q`);
+        qb.orWhere(`${item} LIKE :q`);
       }
     }),
   );

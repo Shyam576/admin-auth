@@ -72,9 +72,9 @@ export class UserService {
     // file?: Reference<IFile>,
   ): Promise<UserEntity> {
     const dto = {
-        ...userRegisterDto,
-        isActive: true,
-    }
+      ...userRegisterDto,
+      isActive: true,
+    };
     const user = this.userRepository.create(dto);
 
     // if (file && !this.validatorService.isImage(file.mimetype)) {
@@ -101,7 +101,17 @@ export class UserService {
   async getUsers(
     pageOptionsDto: UsersPageOptionsDto,
   ): Promise<PageDto<UserDto>> {
-    const queryBuilder = this.userRepository.createQueryBuilder('user');
+    const queryBuilder = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.role', 'role')
+      .searchByString(pageOptionsDto?.q ?? '',[
+        'user.name',
+        'user.email',
+        'user.phone',
+        'role.name',
+      ])
+      .orderBy('user.createdAt',pageOptionsDto.order ?? 'DESC')
+
     const [items, pageMetaDto] = await queryBuilder.paginate(pageOptionsDto);
 
     return items.toPageDto(pageMetaDto);
@@ -168,7 +178,6 @@ export class UserService {
       Object.assign(userData, updatedDto);
       await this.userRepository.save(userData);
       return new UserDto(userData);
-
     } catch (e) {
       console.error('Could not change status: ', e);
     }
