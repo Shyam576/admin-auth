@@ -14,5 +14,8 @@ export class DashboardMenuEntity extends AbstractEntity<DashboardMenuDto> {
 
   @Column({ nullable: false, type: 'varchar' })
   icon!: string;
+
+   @Column({ nullable: false, type: 'json', name: 'sub_menus' })
+  subMenus!: string[];
 }
 

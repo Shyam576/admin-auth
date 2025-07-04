@@ -21,7 +21,11 @@ export class CreateDashboardMenuTable1750829512427
           {
             name: 'url',
             type: 'varchar(100)',
-            isNullable:false
+            isNullable: false,
+          },
+          {
+            name: 'sub_menus',
+            type: 'json',
           },
           {
             name: 'icon',
