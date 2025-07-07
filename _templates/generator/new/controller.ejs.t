@@ -1,92 +1,122 @@
-<%
-function changeCasePascal(str) {
-  return str.replace(/(^|_|\-)(\w)/g, (_, __, c) => c ? c.toUpperCase() : '');
-}
-function inflectionDasherize(str) {
-  return str.replace(/[A-Z]/g, m => '-' + m.toLowerCase()).replace(/^-/, '');
-}
-function fileName(name) {
-  return inflectionDasherize(name).toLowerCase();
-}
-function moduleFileName(name) {
-  return fileName(name) + '.module';
-}
-function ClassName(name) {
-  return changeCasePascal(name);
-}
-function ModuleName(name) {
-  return ClassName(name) + 'Module';
-}
-function ControllerName(name) {
-  return ClassName(name) + 'Controller';
-}
-function controllerFileName(name) {
-  return fileName(name) + '.controller';
-}
-function ServiceName(name) {
-  return ClassName(name) + 'Service';
-}
-function serviceFileName(name) {
-  return fileName(name) + '.service';
-}
-function EntityName(name) {
-  return ClassName(name) + 'Entity';
-}
-function entityFileName(name) {
-  return fileName(name) + '.entity';
-}
-function createCommandFileName(name) {
-  return 'create-' + fileName(name) + '.command';
-}
-function CreateHandlerName(name) {
-  return 'Create' + ClassName(name) + 'Handler';
-}
-function CreateDtoName(name) {
-  return 'Create' + ClassName(name) + 'Dto';
-}
-function createDtoFileName(name) {
-  return 'create-' + fileName(name) + '.dto';
-}
-%>
 ---
-to: "src/modules/<%= fileName(name) %>/<%= controllerFileName(name) %>.ts"
+to: "src/modules/<%= name.toLowerCase().replace(/[A-Z]/g, m => '-' + m.toLowerCase()).replace(/^-/, '') %>/<%= name.toLowerCase().replace(/[A-Z]/g, m => '-' + m.toLowerCase()).replace(/^-/, '') %>.controller.ts"
 unless_exists: true
+skip_if: <%= !blocks.includes('Controller') %>
 ---
-
-
 <%
-ModuleNameVar = ModuleName(name);
-fileNameVar = fileName(name);
+function toPascalCase(str) {
+  return str.replace(/(^|_|\-)(\w)/g, (_, __, c) => c.toUpperCase());
+}
 
-ControllerNameVar = ControllerName(name);
-ControllerFileNameVar = controllerFileName(name);
+function toCamelCase(str) {
+  return str.replace(/[_-](\w)/g, (_, c) => c.toUpperCase())
+            .replace(/^[A-Z]/, (c) => c.toLowerCase());
+}
 
-ServiceNameVar = ServiceName(name);
-serviceFileNameVar = serviceFileName(name);
+function toFileName(str) {
+  return str.replace(/[A-Z]/g, m => '-' + m.toLowerCase()).replace(/^-/, '').toLowerCase();
+}
 
-EntityNameVar = EntityName(name);
-entityFileNameVar = entityFileName(name);
+function pluralize(str) {
+  const endings = {
+    'y': 'ies',
+    's': 'ses',
+    'x': 'xes',
+    'z': 'zes',
+    'ch': 'ches',
+    'sh': 'shes'
+  };
+  for (const [ending, replacement] of Object.entries(endings)) {
+    if (str.endsWith(ending)) {
+      return str.slice(0, -ending.length) + replacement;
+    }
+  }
+  return str + 's';
+}
+const ClassName = toPascalCase(name);
+const fileName = toFileName(name);
+const ControllerName = `${ClassName}Controller`;
+const ServiceName = `${ClassName}Service`;
+const serviceName = toCamelCase(ServiceName);
+const createFunctionName = `create`;
+const updateFunctionName = `update`;
+const deleteFunctionName = `delete`;
+const getAllFunctionName = `getAll`;
+const getSingleFunctionName = `getSingle`;
+const CreateDtoName = `Create${ClassName}Dto`;
+const createDtoName = toCamelCase(CreateDtoName);
+const UpdateDtoName = `Update${ClassName}Dto`;
+const updateDtoName = toCamelCase(UpdateDtoName);
+const PageOptionsDtoName = `PageOptions${ClassName}Dto`;
+const pageOptionsDtoName = toCamelCase(PageOptionsDtoName);
+const DtoName = `${ClassName}Dto`;
+const createDtoFileName = `create-${fileName}.dto`;
+const dtoFileName = `${fileName}.dto`;
+const pageOptionsDtoFileName = `page-options-${fileName}.dto`;
+const updateDtoFileName = `update-${fileName}.dto`;
+const serviceFileName = `${fileName}.service`;
+%>
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Patch,
+  Param,
+  Query,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import type { PageDto } from '../../common/dto/page.dto.ts';
+import { Auth } from '../../decorators/http.decorators';
+import { <%= CreateDtoName %> } from './dtos/<%= createDtoFileName %>.ts';
+import type { <%= DtoName %> } from './dtos/<%= dtoFileName %>.ts';
+import { <%= PageOptionsDtoName %> } from './dtos/<%= pageOptionsDtoFileName %>.ts';
+import { <%= UpdateDtoName %> } from './dtos/<%= updateDtoFileName %>.ts';
+import { <%= ServiceName %> } from './<%= serviceFileName %>.ts';
 
-createCommandFileNameVar = createCommandFileName(name);
-CreateHandlerNameVar = CreateHandlerName(name);
-%>import {Module} from '@nestjs/common';
-import {TypeOrmModule} from '@nestjs/typeorm';
+@Controller('<%= pluralize(fileName) %>')
+@ApiTags('<%= pluralize(fileName) %>')
+export class <%= ControllerName %> {
+  constructor(private <%= serviceName %>: <%= ServiceName %>) {}
 
-import {<%= CreateHandlerNameVar %>} from './commands/<%= createCommandFileNameVar %>';
-import {<%= ControllerNameVar %>} from './<%= ControllerFileNameVar %>';
-import {<%= EntityNameVar %>} from './<%= entityFileNameVar %>';
-import {<%= ServiceNameVar %>} from './<%= serviceFileNameVar %>';
+  @Post()
+  @Auth([])
+  @HttpCode(HttpStatus.CREATED)
+  async <%= createFunctionName %>(@Body() <%= createDtoName %>: <%= CreateDtoName %>) {
+    const entity = await this.<%= serviceName %>.<%= createFunctionName %>(<%= createDtoName %>);
+    return entity.toDto();
+  }
 
-const handlers = [
-    <%= CreateHandlerNameVar %>,
-]
+  @Get()
+  @Auth([])
+  @HttpCode(HttpStatus.OK)
+  <%= getAllFunctionName %>(@Query() <%= pageOptionsDtoName %>: <%= PageOptionsDtoName %>){
+    return this.<%= serviceName %>.<%= getAllFunctionName %>(<%= pageOptionsDtoName %>);
+  }
 
-@Module({
-    imports:[
-        TypeOrmModule.forFeature([<%= EntityNameVar %>]),
-    ],
-    providers:[<%= ServiceNameVar %>, ...handlers],
-    controllers:[<%= ControllerNameVar %>],
-})
+  @Get(':id')
+  @Auth([])
+  @HttpCode(HttpStatus.OK)
+  async <%= getSingleFunctionName %>(@Param('id') id: string): Promise<<%= DtoName %>> {
+    const entity = await this.<%= serviceName %>.<%= getSingleFunctionName %>(id as Uuid);
+    return entity.toDto();
+  }
 
-export class <%= ModuleNameVar %> {}
+  @Patch(':id')
+  @HttpCode(HttpStatus.ACCEPTED)
+  <%= updateFunctionName %>(
+    @Param('id') id: string,
+    @Body() <%= updateDtoName %>: <%= UpdateDtoName %>,
+  ): Promise<void> {
+    return this.<%= serviceName %>.<%= updateFunctionName %>(id as Uuid, <%= updateDtoName %>);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.ACCEPTED)
+  async <%= deleteFunctionName %>(@Param('id') id: string): Promise<void> {
+    await this.<%= serviceName %>.<%= deleteFunctionName %>(id as Uuid);
+  }
+}

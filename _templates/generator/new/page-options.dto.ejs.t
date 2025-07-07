@@ -1,65 +1,13 @@
-<%
-function changeCasePascal(str) {
-  return str.replace(/(^|_|\-)(\w)/g, (_, __, c) => c ? c.toUpperCase() : '');
-}
-function inflectionDasherize(str) {
-  return str.replace(/[A-Z]/g, m => '-' + m.toLowerCase()).replace(/^-/, '');
-}
-function fileName(name) {
-  return inflectionDasherize(name).toLowerCase();
-}
-function moduleFileName(name) {
-  return fileName(name) + '.module';
-}
-function ClassName(name) {
-  return changeCasePascal(name);
-}
-function ModuleName(name) {
-  return ClassName(name) + 'Module';
-}
-function ControllerName(name) {
-  return ClassName(name) + 'Controller';
-}
-function controllerFileName(name) {
-  return fileName(name) + '.controller';
-}
-function ServiceName(name) {
-  return ClassName(name) + 'Service';
-}
-function serviceFileName(name) {
-  return fileName(name) + '.service';
-}
-function EntityName(name) {
-  return ClassName(name) + 'Entity';
-}
-function entityFileName(name) {
-  return fileName(name) + '.entity';
-}
-function createCommandFileName(name) {
-  return 'create-' + fileName(name) + '.command';
-}
-function CreateHandlerName(name) {
-  return 'Create' + ClassName(name) + 'Handler';
-}
-function CreateDtoName(name) {
-  return 'Create' + ClassName(name) + 'Dto';
-}
-function createDtoFileName(name) {
-  return 'create-' + fileName(name) + '.dto';
-}
-function pageOptionsDtoFileName(name) {
-  return 'page-options-' + fileName(name) + '.dto';
-}
-function PageOptionsDtoName(name) {
-  return 'PageOptions' + ClassName(name) + 'Dto';
-}
-%>
 ---
-to: "src/modules/<%= fileName(name) %>/dtos/<%= pageOptionsDtoFileName(name) %>.ts"
+to: "src/modules/<%= name.toLowerCase().replace(/[A-Z]/g, m => '-' + m.toLowerCase()).replace(/^-/, '') %>/dtos/page-options-<%= name.toLowerCase().replace(/[A-Z]/g, m => '-' + m.toLowerCase()).replace(/^-/, '') %>.dto.ts"
 unless_exists: true
 ---
-export class <%= PageOptionsDtoName(name) %> {
-  page: number;
-  limit: number;
+<%
+// Calculate variables for template body
+const className = name.replace(/(^|_|\-)(\w)/g, (_, __, c) => c ? c.toUpperCase() : '');
+const pageOptionsDtoName = `PageOptions${className}Dto`;
+%>
+import { PageOptionsDto } from '../../../common/dto/page-options.dto.ts';
+
+export class <%= pageOptionsDtoName %> extends PageOptionsDto{
 }
- 
