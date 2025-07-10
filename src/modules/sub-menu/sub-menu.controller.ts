@@ -11,7 +11,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import type { PageDto } from '../../common/dto/page.dto.ts';
 import { Auth } from '../../decorators/http.decorators';
 import { CreateSubMenuDto } from './dtos/create-sub-menu.dto.ts';
 import type { SubMenuDto } from './dtos/sub-menu.dto.ts';
