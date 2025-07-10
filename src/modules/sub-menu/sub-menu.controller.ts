@@ -1,4 +1,3 @@
-
 import {
   Body,
   Controller,
@@ -26,7 +25,7 @@ export class SubMenuController {
   constructor(private subMenuService: SubMenuService) {}
 
   @Post()
-  @Auth([])
+  @Auth()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createSubMenuDto: CreateSubMenuDto) {
     const entity = await this.subMenuService.create(createSubMenuDto);
@@ -34,14 +33,14 @@ export class SubMenuController {
   }
 
   @Get()
-  @Auth([])
+  @Auth()
   @HttpCode(HttpStatus.OK)
-  getAll(@Query() pageOptionsSubMenuDto: PageOptionsSubMenuDto){
+  getAll(@Query() pageOptionsSubMenuDto: PageOptionsSubMenuDto) {
     return this.subMenuService.getAll(pageOptionsSubMenuDto);
   }
 
   @Get(':id')
-  @Auth([])
+  @Auth()
   @HttpCode(HttpStatus.OK)
   async getSingle(@Param('id') id: string): Promise<SubMenuDto> {
     const entity = await this.subMenuService.getSingle(id as Uuid);
