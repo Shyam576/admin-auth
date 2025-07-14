@@ -22,7 +22,9 @@ export class SubMenuService {
   }
 
   async getAll(pageOptionsSubMenuDto:PageOptionsSubMenuDto){
-    return this.repo.find();
+    return this.repo.find({where:{
+      id: pageOptionsSubMenuDto?.q as Uuid
+    }});
   }
 
   async getSingle(id: string): Promise<SubMenuEntity> {
