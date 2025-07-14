@@ -42,7 +42,7 @@ export class RolesTable1750674709897 implements MigrationInterface {
     );
 
      await queryRunner.query(`
-      INSERT INTO roles (id, name, allowed_menus, created_at, updated_at) 
+      INSERT INTO roles (id, name,description, allowed_menus, created_at, updated_at) 
       VALUES 
         (UUID(), 'admin','test', '["dashboard","users","settings","analytics"]', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         (UUID(), 'superadmin','test', '["dashboard","users","settings","analytics"]', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
